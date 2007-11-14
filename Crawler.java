@@ -184,7 +184,8 @@ class Crawler {
 		
 		
 		for(int i=0; i<sightLinks.size(); i++){
-		    System.out.println(((Link)sightLinks.get(i)).getFileName());
+		    System.out.println(((Link)sightLinks.get(i)).getText());
+		    Sight sight = readSight(((Link)sightLinks.get(i)));
 		}
 		
 		
@@ -211,6 +212,80 @@ class Crawler {
 	  }
 	  return result; 
     }
+    
+    
+    Sight readSight(Link l) {
+	  try {
+		URL sightUrl = new URL(l.getProtocol(), l.getHost(), l.getUrl());
+		Scanner sightScanner = getScannerFromUrl(sightUrl);
+		
+		String filename = l.getFileName();
+		String city = getCityFromFileName(filename);
+		
+		String sightName = getSightNameFromFileName(filename);
+		
+		String[] descriptions = findDescriptions(sightScanner);
+		
+		
+		//System.out.println(sightName);
+		
+		return new Sight(city, sightName, sightUrl, descriptions);
+		
+		
+		
+	  } catch (MalformedURLException e) {
+		System.out.println("error while forming URL object: "+e);
+	  }
+	  
+	  return null; //should never happen...
+	  
+    
+    }
+    
+    
+    String getCityFromFileName(String filename) {
+	  int i = filename.indexOf("-")+1;
+	  int j = filename.indexOf("-", i+1);
+	  return filename.substring(i,j);
+    }
+    
+    String getSightNameFromFileName(String filename) {
+	  int i = filename.indexOf("-");
+	  int j = filename.indexOf("-", i+1)+1;
+	  int k = filename.indexOf("-", j+1);
+	  return filename.substring(j,k);
+    }
+    
+    String[] findDescriptions(Scanner scanner) {
+	  String[] result = new String[10];
+	  int nrOfDescriptions=0;
+	  
+	  while(scanner.hasNextLine()) {
+		String s = scanner.next();
+		
+		int i=0;
+		while(s.indexOf("<span class=\"content\">",i) != -1) {
+		    
+		    int beginOpen  = s.indexOf("<span class=\"content\">",i);
+		    
+		    int beginSluit = s.indexOf("</span>", beginOpen);
+		    
+		    String description = s.substring(beginOpen+22, beginSluit);
+		    
+		    result[nrOfDescriptions] = description;
+		    nrOfDescriptions++;
+		    i = beginSluit;
+		}
+		
+	  }
+	  
+	  
+	  
+	  return result;
+    }
+    
+    
+    
     
     public static void main(String[] args) {
 	  new Crawler().start();
