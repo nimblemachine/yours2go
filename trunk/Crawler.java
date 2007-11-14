@@ -3,6 +3,9 @@ import java.io.*;
 import java.util.Scanner;
 import java.util.ArrayList;
 
+import gate.creole.annic.apache.lucene.analysis.standard.StandardTokenizer;
+
+
 class Crawler {
     
     String host;
@@ -206,11 +209,21 @@ class Crawler {
 		//System.out.println(((Link)links.get(i)).getFileName());
 		
 		if( ((Link)links.get(i)).getFileName().startsWith("Things_To_Do-") && ((Link)links.get(i)).getFileName().endsWith("-BR-1.html") && !((Link)links.get(i)).getFileName().endsWith("MISC-BR-1.html") && !((Link)links.get(i)).getText().equals("All Tips")){
-		    
-		    result.add((Link)links.get(i));
+		    if(!linkInList((Link)links.get(i), result)){
+				result.add((Link)links.get(i));
+		    }
 		}
 	  }
 	  return result; 
+    }
+    
+    boolean linkInList(Link l, ArrayList<Link> list) {
+	  for(int i=0;i<list.size();i++){
+		if( ((Link)list.get(i)).getText().equals(l.getText())){
+		    return true;
+		}
+	  }
+	  return false;
     }
     
     
