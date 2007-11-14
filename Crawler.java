@@ -98,7 +98,7 @@ class Crawler {
 	  
 	  for(int i=0; i<links.size();i++){
 		Link l = (Link)links.get(i);
-		if (l.numberOfParts() >= 7 && l.getDirectory(2).equals("travel")) { //city link found!!
+		if (l.numberOfParts() >= 7 && l.getPart(2).equals("travel")) { //city link found!!
 		    result.add(l);
 		}
 	  }

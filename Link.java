@@ -13,6 +13,14 @@ class Link {
 	  nrOfParts = 0;
     }
     
+    
+    /*
+    Makes a new Link object, with the protocol on index 0 and the host on
+    index 1 of the parts array.  
+    However, when String s is an absolute link, the whole thing is placed on
+    the first index position of the linkParts array. The devideIntoParts method
+    will do this.
+    */
     Link(String protocol, String host, String s) {
 	  completeLink = s;
 	  linkParts = new String[100];
@@ -27,6 +35,9 @@ class Link {
        the first position will be the hostname (with protocol), the following
 	 positions will contain the directory names, and the last
 	 position will contain the file name (e.g. the html file)
+	 
+	 When the link is an absolute link, is is not devided into parts, but the
+	 whole url is placed in index 0 of the linkParts array.
     */
     void divideIntoParts(){
 	  String url = getUrl();
@@ -57,12 +68,19 @@ class Link {
     }
     
     
+    /*
+    returns the text of a link (as shown on a html page)
+    */
     String getText() {
 	  int i = completeLink.indexOf(">")+1;
 	  int j = completeLink.indexOf("</a>");
 	  return completeLink.substring(i,j);
     }
     
+    
+    /*
+    returns the url of the link (<a href="this part">)
+    */
     String getUrl() {
 	  int i = completeLink.indexOf("=")+2;
 	  int j = completeLink.indexOf("\"", i);
@@ -72,25 +90,41 @@ class Link {
 	  return completeLink.substring(i,j);
     }
     
+    
+    /*
+    returns the filename of the link. Mostly a .html file
+    */
     String getFileName() {
 	  return linkParts[nrOfParts-1];
     }
     
-    String getDirectory(int index) {
+    /*
+    returns the name of the part on the specified index
+    */
+    String getPart(int index) {
 	  if(index >= nrOfParts || index < 0) {
 		throw new Error("wrong index");
 	  }
 	  return linkParts[index];
     }
     
+    /*
+    returns the number of parts the link consists of
+    */
     int numberOfParts() {
 	  return nrOfParts;
     }
     
+    /*
+    returns the protocol of the link
+    */
     String getProtocol() {
 	  return linkParts[0];
     }
     
+    /*
+    returns the host of the link
+    */
     String getHost() {
 	  return linkParts[1];
     }
