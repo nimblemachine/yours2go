@@ -3,92 +3,81 @@ import java.io.*;
 import java.util.Scanner;
 
 class Crawler {
-
+    
     Crawler() {
+	  protocol = "http";
+	  host = "www.virtualtourist.com";
+	  file = "/travel/Europe/TravelGuide-Europe.html";
+	  //file = "/travel/Europe/United_Kingdom/England/Greater_London/London-309228/TravelGuide-London.html";
     }
-
+    
+    String host;
+    String protocol;
+    String file;
+    
     void start() {
-	String protocol = "http";
-	String host = "www.virtualtourist.com";
-	String file = "/travel/Europe/TravelGuide-Europe.html";
-
-
-	System.out.println("helloooo");
-	try {
-	    URL url = new URL(protocol, host, file);
-	    
-	    URLConnection connection = url.openConnection();
-	    
-	    InputStream input = connection.getInputStream();
-
-	    Scanner scanner = new Scanner(input).useDelimiter("\n");
-	    //while(scanner.hasNext("^.*") || scanner.hasNext(".*") || scanner.hasNext("\n")) {
+	  
+	  try {
+		URL url = new URL(protocol, host, file);
 		
-	    while(scanner.hasNextLine()) {
-		String regel = scanner.next();
-		Scanner regelScanner = new Scanner(regel);
-		//System.out.println("begin"+regel+"end");
-		//		if(regel.endsWith("</a>")) {
-		//		    System.out.println(regel+"endlink");
-		//		}
-		printLinks(regel);
-
-	    }
-	    //System.out.println(scanner.nextLine());
-	    //System.out.println(scanner.nextLine());
-       
-
-
-	} catch (MalformedURLException e) {
-	    System.out.println(e);
-	} catch (IOException e) {
-	    System.out.println(e);
-	}
-	
-    }
-
-    void printLinks(String s) {
-
-	/*
-	for(int i=0;i<s.length();i++){
-	    
-	    
-	    if(s.substring(i).length() > 10 && s.substring(i, i+8).equals("<a href=")) {
-		System.out.println("yess!");
-		System.out.println(s.substring(i)+"q");
+		URLConnection connection = url.openConnection();
 		
-		for(int j=i;j<s.substring(i).length();j++){
-		    if(s.substring(j).length() > 3 && s.substring(i,j+4).endsWith("</a>")) {
-			System.out.println("einde link:");
-			System.out.println(s.substring(i,j+4));
-		    } 
-		    if(s.endsWith("</a>")) {
-			System.out.println("ee");
-		    }
+		InputStream input = connection.getInputStream();
+		
+		Scanner scanner = new Scanner(input).useDelimiter("\n");
+		
+		
+		while(scanner.hasNextLine()) {
+		    String regel = scanner.next();
+		    printLinks(regel);
+		    
 		}
-
-	    }
-       	}
-	*/
-	int i=0;
-	//System.out.println("\n\n"+s+"\n\nq");
-	while(s.indexOf("<a href=", i) != -1) {
-	    int beginOpen  = s.indexOf("<a ", i);
-
-	    int beginSluit = s.indexOf("</a>", i);
-	    if(beginSluit < beginOpen) { //something wrong in html code, it happens...
-		beginSluit = s.indexOf("</a>", i+5);
-	    }
-	    i = beginSluit;
-	    //System.out.print(""+beginOpen+" "+beginSluit);
-	    System.out.println(s.substring(beginOpen, beginSluit+4));
-	}
-
-   
-
+		
+		
+		
+		
+	  } catch (MalformedURLException e) {
+		System.out.println(e);
+	  } catch (IOException e) {
+		System.out.println(e);
+	  }
+	  
     }
+    
+    void printLinks(String s) {
+	  
+	  
+	  int i=0;
+	  
+	  while(s.indexOf("<a href=", i) != -1) {
+		
+		int beginOpen  = s.indexOf("<a ", i);
+		
+		int beginSluit = s.indexOf("</a>", i);
+		if(beginSluit < beginOpen) { //something wrong in html code, it happens...
+		    beginSluit = s.indexOf("</a>", i+5);
+		    
+		    i+=5;
+		}
+		if(beginSluit != -1){
+		    
+		    
 
+			  Link l = new Link(protocol, host, s.substring(beginOpen, beginSluit+4));
+			  
+			  if (l.numberOfParts() >= 7 && l.getDirectory(1).equals("travel")) {
+				System.out.println(l.getUrl());
+			  }
+
+			  i = beginSluit;
+		}
+		
+	  }
+	  
+	  
+    }
+    
     public static void main(String[] args) {
-	new Crawler().start();
+	  new Crawler().start();
     }
 }
