@@ -66,7 +66,7 @@ class Crawler {
 			  Link l = new Link(protocol, host, s.substring(beginOpen, beginSluit+4));
 			  
 			  if (l.numberOfParts() >= 7 && l.getDirectory(1).equals("travel")) {
-				System.out.println(l.getUrl());
+				System.out.println(l.getHost()+l.getUrl());
 			  }
 
 			  i = beginSluit;
