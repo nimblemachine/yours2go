@@ -5,6 +5,12 @@ import java.util.ArrayList;
 
 class Crawler {
     
+    String host;
+    String protocol;
+    String file;
+    
+    ArrayList<Link> cityLinks;
+    
     Crawler() {
 	  protocol = "http";
 	  host = "www.virtualtourist.com";
@@ -12,11 +18,7 @@ class Crawler {
 	  //file = "/travel/Europe/United_Kingdom/England/Greater_London/London-309228/TravelGuide-London.html";
     }
     
-    String host;
-    String protocol;
-    String file;
     
-    ArrayList<Link> cityLinks;
     
     void start() {
 	  
