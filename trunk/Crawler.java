@@ -48,6 +48,10 @@ class Crawler {
 	  
     }
     
+    
+    /*
+    find all links on a certain scanner. the scanner should contain a html file. 
+    */
     ArrayList<Link> findLinks(Scanner scanner) {
 	  ArrayList<Link> result = new ArrayList<Link>();
 	  
@@ -86,7 +90,9 @@ class Crawler {
     
     
     
-    
+    /*
+    finds links to cities of europe from a list containing all links on a page
+    */
     ArrayList<Link> findCityLinks(ArrayList<Link> links) {
 	  ArrayList<Link> result = new ArrayList<Link>();
 	  
@@ -99,6 +105,10 @@ class Crawler {
 	  return result;
     }
     
+    
+    /*
+    finds links to a Things To Do page in all Links in the list
+    */
     Link findThingsToDoLink(ArrayList<Link> links) {
 	  for(int i=0; i<links.size();i++){
 		//System.out.println(((Link)links.get(i)).getFileName());
@@ -111,6 +121,10 @@ class Crawler {
 	  return null; //not found
     }
     
+    
+    /*
+    processes a city with link l
+    */
     void processCity(Link l) {
 	  try {
 		
@@ -134,6 +148,10 @@ class Crawler {
 	  }
     }
     
+    
+    /*
+    Makes a scanner containing the html from a certain URL object
+    */
     Scanner getScannerFromUrl(URL url) {
 	  try{
 		URLConnection connection = url.openConnection();
@@ -147,6 +165,10 @@ class Crawler {
 	  
     }
     
+    
+    /*
+    gets all links to sights on the page with link l
+    */
     void processThingsToDo(Link l) {
 	  
 	  try{
@@ -173,6 +195,10 @@ class Crawler {
 	  
     }
     
+    
+    /*
+    Filters links for sights from an arraylist with all links for a page
+    */    
     ArrayList<Link> findSightLinks(ArrayList<Link> links) {
 	  ArrayList<Link> result = new ArrayList<Link>();
 	  for(int i=0; i<links.size();i++){
