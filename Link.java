@@ -16,8 +16,9 @@ class Link {
     Link(String protocol, String host, String s) {
 	  completeLink = s;
 	  linkParts = new String[100];
-	  linkParts[0] = protocol+"://"+host;
-	  nrOfParts = 1;
+	  linkParts[0] = protocol;
+	  linkParts[1] = host;
+	  nrOfParts = 2;
 	  divideIntoParts();
 	  
     }
@@ -72,7 +73,7 @@ class Link {
     }
     
     String getFileName() {
-	  return linkParts[nrOfParts];
+	  return linkParts[nrOfParts-1];
     }
     
     String getDirectory(int index) {
@@ -86,8 +87,12 @@ class Link {
 	  return nrOfParts;
     }
     
-    String getHost() {
+    String getProtocol() {
 	  return linkParts[0];
+    }
+    
+    String getHost() {
+	  return linkParts[1];
     }
     
     
