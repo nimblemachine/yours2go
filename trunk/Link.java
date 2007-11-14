@@ -86,6 +86,10 @@ class Link {
 	  return nrOfParts;
     }
     
+    String getHost() {
+	  return linkParts[0];
+    }
+    
     
     
 }
