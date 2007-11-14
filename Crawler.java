@@ -21,13 +21,10 @@ class Crawler {
     void start() {
 	  
 	  try {
-		URL url = new URL(protocol, host, file);
+		URL europeUrl = new URL(protocol, host, file);
 		
-		URLConnection connection = url.openConnection();
 		
-		InputStream input = connection.getInputStream();
-		
-		Scanner scanner = new Scanner(input).useDelimiter("\n");
+		Scanner scanner = getScannerFromUrl(europeUrl);
 		
 		
 		//while(scanner.hasNextLine()) {
@@ -43,8 +40,8 @@ class Crawler {
 		
 		
 		
-	  } catch (Exception e) {
-		System.out.println(e);
+	  } catch (MalformedURLException e) {
+		System.out.println("error while forming URL object: "+e);
 	  } 
 	  
     }
@@ -104,7 +101,7 @@ class Crawler {
 	  for(int i=0; i<links.size();i++){
 		//System.out.println(((Link)links.get(i)).getFileName());
 		
-		if( ((Link)links.get(i)).getFileName() != null && ((Link)links.get(i)).getFileName().startsWith("Things_To_Do-")) {
+		if( ((Link)links.get(i)).getFileName().startsWith("Things_To_Do-")) {
 		    
 		    return (Link)links.get(i);
 		}
@@ -117,11 +114,7 @@ class Crawler {
 		
 		URL cityUrl = new URL(l.getProtocol(), l.getHost(), l.getUrl());
 		//System.out.println(l.getProtocol()+" "+l.getHost()+" "+l.getUrl());
-		URLConnection cityConnection = cityUrl.openConnection();
-		
-		InputStream cityInput = cityConnection.getInputStream();
-		
-		Scanner cityScanner = new Scanner(cityInput).useDelimiter("\n");
+		Scanner cityScanner = getScannerFromUrl(cityUrl);
 		
 		
 		
@@ -129,14 +122,67 @@ class Crawler {
 		
 		Link thingsToDoLink = findThingsToDoLink(links);
 		
-		System.out.println(thingsToDoLink.getProtocol()+"://"+thingsToDoLink.getHost()+thingsToDoLink.getUrl());
+		//System.out.println(thingsToDoLink.getProtocol()+"://"+thingsToDoLink.getHost()+thingsToDoLink.getUrl());
+		
+		processThingsToDo(thingsToDoLink);
 		
 		
-	  } catch (Exception e) {
-		System.out.println("foutje: "+e);
+	  } catch (MalformedURLException e) {
+		System.out.println("error while forming URL object: "+e);
 	  }
     }
     
+    Scanner getScannerFromUrl(URL url) {
+	  try{
+		URLConnection connection = url.openConnection();
+		InputStream input = connection.getInputStream();
+		return new Scanner(input).useDelimiter("\n");
+	  } catch (IOException e) {
+		System.out.println("error while opening connection: "+e);
+		System.exit(1);
+	  }
+	  return null; //will never happen
+	  
+    }
+    
+    void processThingsToDo(Link l) {
+	  
+	  try{
+		URL toDoUrl = new URL(l.getProtocol(), l.getHost(), l.getUrl());
+		//System.out.println(l.getProtocol()+" "+l.getHost()+" "+l.getUrl());
+
+		Scanner toDoScanner = getScannerFromUrl(toDoUrl);
+		
+		
+		ArrayList<Link> links = findLinks(toDoScanner);
+		
+		ArrayList<Link> sightLinks = findSightLinks(links);
+		
+		
+		for(int i=0; i<sightLinks.size(); i++){
+		    System.out.println(((Link)sightLinks.get(i)).getFileName());
+		}
+		
+		
+		
+	  } catch (MalformedURLException e) {
+		System.out.println("error while forming URL object: "+e);
+	  }
+	  
+    }
+    
+    ArrayList<Link> findSightLinks(ArrayList<Link> links) {
+	  ArrayList<Link> result = new ArrayList<Link>();
+	  for(int i=0; i<links.size();i++){
+		//System.out.println(((Link)links.get(i)).getFileName());
+		
+		if( ((Link)links.get(i)).getFileName().startsWith("Things_To_Do-") && ((Link)links.get(i)).getFileName().endsWith("-BR-1.html") && !((Link)links.get(i)).getFileName().endsWith("MISC-BR-1.html") && !((Link)links.get(i)).getText().equals("All Tips")){
+		    
+		    result.add((Link)links.get(i));
+		}
+	  }
+	  return result; 
+    }
     
     public static void main(String[] args) {
 	  new Crawler().start();
